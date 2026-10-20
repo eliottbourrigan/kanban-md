@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kanban.md turns one readable Markdown file into a lightweight, LLM-ready Kanban board.">
+  <title>Kanban.md · Markdown-first Kanban</title>
+  <style>
+    @font-face{font-family:Geist;src:url("static/Geist/Geist-VariableFont_wght.ttf") format("truetype");font-style:normal;font-weight:100 900;font-display:swap}
+    @font-face{font-family:JetBrainsMono;src:url("static/JetBrainsMono/JetBrainsMono-Regular.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}
+    :root{--ink:#171714;--paper:#f4f2e9;--panel:#fffef8;--muted:#716f67;--line:#171714;--acid:#d9ff43;--orange:#ff8a43;--blue:#8fc9ff;--shadow:4px 4px 0 var(--ink);--mono:JetBrainsMono,"SFMono-Regular",Consolas,monospace;--sans:Geist,Arial,sans-serif}
+    *{box-sizing:border-box}html{background:var(--paper);color:var(--ink);font-family:var(--sans);height:100%}body{display:flex;flex-direction:column;height:100%;margin:0;min-width:320px;overflow:hidden}button,input,select,textarea{border:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--ink);font:inherit}button{cursor:pointer;font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.02em;padding:.62rem .82rem;text-transform:uppercase}button:hover{background:var(--acid)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:1px}.primary{background:var(--ink);color:var(--panel)}.primary:hover{background:var(--acid);color:var(--ink)}.danger:hover{background:#ff6961}.quiet{border-color:#aaa;background:transparent}.icon-button{padding:.35rem .5rem}.app-header{border-bottom:2px solid var(--line);display:flex;flex:none;justify-content:space-between;gap:1rem;padding:1.15rem 1.4rem;background:var(--panel);z-index:20}.brand{display:flex;align-items:baseline;gap:.8rem}.brand h1{font-size:1.35rem;letter-spacing:-.04em;margin:0}.brand span{font:700 .68rem var(--mono);color:var(--muted);text-transform:uppercase}.actions{display:flex;flex-wrap:wrap;gap:.5rem}.workspace{display:flex;flex:1;flex-direction:column;min-height:0;padding:1rem 1.4rem 1.2rem}.metrics{display:grid;flex:none;grid-template-columns:repeat(3,minmax(120px,1fr));border:1px solid var(--line);margin-bottom:.7rem;background:var(--panel)}.metric{padding:.55rem .8rem;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric strong{display:block;font:700 1.15rem var(--mono)}.metric span{color:var(--muted);font-size:.66rem;text-transform:uppercase}.toolbar{align-items:end;display:grid;flex:none;grid-template-columns:minmax(180px,1.7fr) repeat(3,minmax(130px,1fr));gap:.6rem;margin-bottom:.7rem}.filter-control{min-width:0;position:relative}.filter-label{align-items:center;display:flex;font:700 .63rem var(--mono);gap:.3rem;margin-bottom:.28rem;text-transform:uppercase}.filter-label svg{height:15px;width:15px;fill:currentColor}.filter-control input,.multi-filter summary{align-items:center;background:var(--panel);border:1px solid var(--line);display:flex;height:38px;padding:.45rem .6rem;width:100%}.multi-filter summary{cursor:pointer;font-size:.78rem;justify-content:space-between;list-style:none}.multi-filter summary::-webkit-details-marker{display:none}.multi-filter summary::after{content:'+';font:700 .9rem var(--mono)}.multi-filter[open] summary::after{content:'−'}.filter-options{background:var(--panel);border:1px solid var(--line);box-shadow:3px 3px 0 var(--ink);display:grid;left:0;max-height:230px;min-width:100%;overflow:auto;padding:.35rem;position:absolute;top:calc(100% + 3px);z-index:30}.filter-option{align-items:center;display:flex;font-size:.75rem;gap:.45rem;padding:.38rem;white-space:nowrap}.filter-option:hover{background:var(--acid)}.filter-option input{accent-color:var(--ink);height:14px;margin:0;width:14px}.board{display:grid;flex:1;grid-template-columns:repeat(3,minmax(290px,1fr));gap:.8rem;min-height:0}.column{background:#e9e7df;border:2px solid var(--line);display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}.column-head{align-items:center;background:var(--panel);border-bottom:2px solid var(--line);display:flex;flex:none;justify-content:space-between;padding:.58rem .7rem}.column-head h2{font-size:.75rem;font-family:var(--mono);letter-spacing:.08em;margin:0;text-transform:uppercase}.column-head span{background:var(--ink);color:white;font:700 .65rem var(--mono);min-width:1.5rem;padding:.18rem;text-align:center}.column[data-status="doing"] .column-head{background:var(--acid)}.column[data-status="done"] .column-head{background:var(--blue)}.cards{display:flex;flex:1;flex-direction:column;gap:.45rem;min-height:0;overflow-y:auto;padding:.5rem}.card{background:var(--panel);border:1px solid var(--line);box-shadow:2px 2px 0 rgba(23,23,20,.9);cursor:grab;padding:.5rem;position:relative}.card:active{cursor:grabbing}.card-top{align-items:center;display:flex;justify-content:space-between;gap:.4rem}.ticket-id{font:700 .61rem var(--mono);letter-spacing:.04em}.card-menu{display:flex;gap:.42rem}.card-menu button{background:transparent;border:0;color:var(--muted);font:500 .65rem var(--sans);letter-spacing:0;padding:0;text-decoration:underline;text-transform:none}.card-menu button:hover{background:transparent;color:var(--ink)}.card h3{font-size:.81rem;line-height:1.25;margin:.35rem 0}.description{color:var(--muted);font-size:.7rem;line-height:1.3;margin:.32rem 0;white-space:pre-wrap}.tags{display:flex;flex-wrap:wrap;gap:.25rem}.tag{border:1px solid var(--line);font:600 .56rem var(--mono);padding:.14rem .26rem}.priority-P0-urgent,.priority-P1-critical{background:#ff7068}.priority-P2-high{background:#ffb35f}.priority-P3-medium{background:#ffe66d}.priority-P4-low{background:#bfe8bb}.priority-P5-backlog{background:#bed9ef}.lot{background:#eee}.empty{color:var(--muted);font:.7rem var(--mono);padding:1rem;text-align:center}.sortable-ghost{opacity:.3;background:var(--acid)}.sortable-chosen{box-shadow:5px 5px 0 var(--ink)}dialog{border:2px solid var(--line);border-radius:0;box-shadow:8px 8px 0 var(--ink);max-height:90vh;max-width:680px;padding:0;width:calc(100% - 2rem)}dialog::backdrop{background:rgba(23,23,20,.58)}.modal-head{align-items:center;border-bottom:2px solid var(--line);display:flex;justify-content:space-between;padding:.85rem 1rem}.modal-head h2{font-size:1rem;margin:0}.modal-body{max-height:calc(90vh - 120px);overflow:auto;padding:1rem}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.field{display:flex;flex-direction:column;gap:.3rem}.field.full{grid-column:1/-1}.field label{font:700 .68rem var(--mono);text-transform:uppercase}.field input,.field select,.field textarea{padding:.6rem;min-height:40px}.field textarea{min-height:90px;resize:vertical}.hint{color:var(--muted);font-size:.68rem}.modal-actions{border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:.5rem;padding:1rem}.lots-list{display:flex;flex-direction:column;gap:.6rem}.lot-row{align-items:center;border:1px solid var(--line);display:grid;gap:.7rem;grid-template-columns:80px 1fr auto;padding:.7rem}.lot-row code{font-size:.7rem}.lot-row strong{display:block;font-size:.85rem}.lot-row small{color:var(--muted)}.file-input{display:none}.toast{background:var(--ink);bottom:1rem;color:white;font:700 .72rem var(--mono);left:50%;padding:.7rem 1rem;position:fixed;transform:translateX(-50%);z-index:50}.hidden{display:none!important}
+    button,.brand span,.metric strong,.filter-label,.column-head h2,.column-head span,.ticket-id,.tag,.empty,.lot-row code,.toast{font-weight:400}.multi-filter summary::after{font-weight:400}.card{box-shadow:inset 5px 0 0 var(--priority-color),2px 2px 0 #aaa89f;padding-left:calc(.5rem + 5px)}.card-top{align-items:center;display:flex}.ticket-id{color:#8b8981;flex:none}.ticket-separator{color:#a6a39b;flex:none;font-size:.68rem}.card-top h3{flex:0 1 auto;margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card-top .card-menu{margin-left:auto}.description{height:1.05rem;margin:.28rem 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card.priority-border-P0-urgent{--priority-color:#e83b32}.card.priority-border-P1-critical{--priority-color:#ff7068}.card.priority-border-P2-high{--priority-color:#ff9b45}.card.priority-border-P3-medium{--priority-color:#e5c52f}.card.priority-border-P4-low{--priority-color:#65ad69}.card.priority-border-P5-backlog{--priority-color:#68a4d5}
+    .cards{scrollbar-color:#aaa79d #dedcd4;scrollbar-width:thin}.cards::-webkit-scrollbar{width:10px}.cards::-webkit-scrollbar-track{background:#dedcd4;border-left:1px solid #c5c2b9}.cards::-webkit-scrollbar-thumb{background:#aaa79d;border:2px solid #dedcd4}.cards::-webkit-scrollbar-thumb:hover{background:#77756f}.tag,.tag.lot{background:#f1f0ec;border-color:#c9c6bd;color:#68665f}.tag.priority-P0-urgent{background:#eadada;border-color:#7a2020;color:#571313}.tag.priority-P1-critical{background:#f0dedb;border-color:#963a30;color:#70251e}.tag.priority-P2-high{background:#f2e3d4;border-color:#9b5724;color:#713a13}.tag.priority-P3-medium{background:#eee9d0;border-color:#88721e;color:#62510b}.tag.priority-P4-low{background:#e2ebe1;border-color:#668269;color:#405943}.tag.priority-P5-backlog{background:#e3e7ea;border-color:#78838d;color:#4f5c67}.epic-tag{background:hsl(var(--epic-hue) 28% 92%);border-color:hsl(var(--epic-hue) 25% 70%);color:hsl(var(--epic-hue) 34% 29%)}.card-menu{opacity:0;pointer-events:none;transition:opacity 100ms ease}.card:hover .card-menu,.card:focus-within .card-menu{opacity:1;pointer-events:auto}.card-menu button{align-items:center;color:#77746d;display:flex;height:18px;justify-content:center;text-decoration:none;width:18px}.card-menu button:hover{color:var(--ink)}.card-menu svg{fill:currentColor;height:14px;width:14px}
+    .project-actions{display:flex;gap:.5rem}.landing{align-items:flex-start;display:flex;flex:1;justify-content:center;padding:clamp(2rem,10vh,7rem) 1.4rem}.landing-card{border:2px solid var(--line);box-shadow:7px 7px 0 #aaa89f;max-width:720px;padding:clamp(1.5rem,4vw,3rem);width:100%}.landing-kicker{color:var(--muted);font:400 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase}.landing h2{font-size:clamp(2rem,5vw,4.4rem);letter-spacing:-.07em;line-height:.95;margin:1rem 0}.landing p{font-size:1rem;line-height:1.55;margin:0 0 1.5rem;max-width:590px}.landing-points{display:grid;gap:.55rem;grid-template-columns:repeat(3,1fr);margin:1.8rem 0 2rem}.landing-point{border-top:2px solid var(--line);padding-top:.55rem}.landing-point strong{display:block;font-size:.86rem}.landing-point span{color:var(--muted);display:block;font-size:.75rem;line-height:1.35;margin-top:.25rem}.prompt-block{margin:1rem 0;position:relative}.prompt-block .syntax-code{margin:0;padding-top:2.2rem}.copy-prompt{align-items:center;background:#373732;border:0;color:#f4f2e9;display:flex;height:28px;justify-content:center;padding:0;position:absolute;right:.45rem;top:.45rem;width:28px;z-index:1}.copy-prompt:hover{background:var(--acid);color:var(--ink)}.copy-prompt svg{fill:currentColor;height:16px;width:16px}.syntax-code{background:#22221f;border:1px solid var(--line);color:#f4f2e9;font:400 .75rem/1.55 var(--mono);margin:0;max-height:55vh;overflow:auto;padding:1rem;white-space:pre-wrap}.syntax-note{color:var(--muted);font-size:.8rem;line-height:1.45}
+    html,body{background-color:var(--paper);background-image:linear-gradient(rgba(23,23,20,.065) 1px,transparent 1px),linear-gradient(90deg,rgba(23,23,20,.065) 1px,transparent 1px);background-size:36px 36px}#noise-canvas{height:100%;inset:0;opacity:.52;pointer-events:none;position:fixed;width:100%;z-index:0}body>header,body>main,body>.toast{position:relative;z-index:1}.app-header{backdrop-filter:blur(12px);background:rgba(255,254,248,.88)}.mui-icon{fill:currentColor;height:16px;vertical-align:-3px;width:16px}.button-content{align-items:center;display:inline-flex;gap:.42rem}.landing{overflow-y:auto;padding:clamp(1.5rem,5vh,4rem) 1.4rem}.landing-card{background:rgba(255,254,248,.9);max-width:1180px;padding:clamp(1.3rem,3vw,2.5rem)}.landing-hero{align-items:center;display:grid;gap:clamp(2rem,5vw,5rem);grid-template-columns:minmax(0,1fr) minmax(400px,.95fr)}.landing h2{font-size:clamp(2.8rem,5vw,5.4rem);max-width:680px}.landing-actions{display:flex;flex-wrap:wrap;gap:.6rem}.demo-board{background:#dedcd4;border:2px solid var(--line);box-shadow:6px 6px 0 #aaa89f;display:grid;gap:5px;grid-template-columns:repeat(3,1fr);min-height:310px;padding:5px;transform:rotate(1deg)}.demo-column{background:#eceae3;border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}.demo-column h3{background:var(--panel);border-bottom:1px solid var(--line);font:400 .55rem var(--mono);letter-spacing:.07em;margin:0;padding:.55rem;text-transform:uppercase}.demo-cards{display:flex;flex:1;flex-direction:column;gap:6px;padding:6px}.demo-ticket{--demo-color:#e5c52f;background:var(--panel);border:1px solid var(--line);box-shadow:inset 4px 0 var(--demo-color),2px 2px #aaa89f;font-size:.63rem;line-height:1.25;padding:.52rem .45rem .52rem .75rem;will-change:transform}.demo-ticket small{color:var(--muted);display:block;font:400 .48rem var(--mono);margin-top:.3rem}.landing-points{gap:1rem;margin:2.5rem 0 0}.landing-point{background:rgba(244,242,233,.72);border:1px solid #b8b5ad;padding:1rem}.landing-point svg{fill:var(--ink);height:20px;margin-bottom:.7rem;width:20px}.landing-point strong{font-size:.95rem}.landing-point span{font-size:.8rem;line-height:1.45}.landing-point em{font-style:normal;text-decoration:line-through}.get-started-grid{display:grid;gap:1rem;grid-template-columns:1fr 1fr}.start-option{border:1px solid var(--line);padding:1rem}.start-option-head{align-items:flex-start;display:flex;gap:.7rem}.option-number{align-items:center;background:var(--ink);color:var(--panel);display:flex;flex:none;font:400 .7rem var(--mono);height:25px;justify-content:center;width:25px}.start-option h3{font-size:1rem;margin:.15rem 0 .2rem}.start-option>p{color:var(--muted);font-size:.75rem;margin:.2rem 0 1rem}.start-steps{display:grid;gap:.55rem;list-style:none;margin:0 0 1rem;padding:0}.start-steps li{align-items:start;display:grid;gap:.55rem;grid-template-columns:20px 1fr}.step-number{border:1px solid #aaa79d;color:var(--muted);font:400 .58rem var(--mono);padding:.15rem;text-align:center}.start-steps strong{display:block;font-size:.76rem}.start-steps small{color:var(--muted);display:block;font-size:.68rem;margin-top:.1rem}.prompt-block{margin:0;overflow:hidden}.prompt-block .syntax-code{max-height:126px;overflow:hidden;padding-top:2.2rem}.prompt-block::after{background:linear-gradient(transparent,#22221f);bottom:0;content:"";height:45px;left:0;pointer-events:none;position:absolute;right:0}.copy-prompt{z-index:2}#syntaxDialog{max-width:1040px}.syntax-intro{color:var(--muted);font-size:.8rem;margin:0 0 1rem}*{scrollbar-color:#98958d rgba(222,220,212,.65);scrollbar-width:thin}*::-webkit-scrollbar{height:10px;width:10px}*::-webkit-scrollbar-track{background:rgba(222,220,212,.65);border-left:1px solid rgba(23,23,20,.12)}*::-webkit-scrollbar-thumb{background:#98958d;border:2px solid #dedcd4}*::-webkit-scrollbar-thumb:hover{background:#5f5d58}*::-webkit-scrollbar-corner{background:#dedcd4}
+    #syntaxDialog .modal-body{padding:1.5rem}.get-started-grid{gap:1.5rem}.start-option{padding:1.4rem}.start-option-head{margin-bottom:1.4rem}.start-option-head p{color:var(--muted);font-size:.76rem;line-height:1.4;margin:.35rem 0 0}.start-option h3{font-size:1.08rem;margin:.08rem 0}.start-steps{gap:.85rem;margin-bottom:1.4rem}.start-steps li{gap:.7rem}.prompt-block .syntax-code{background:#000;color:#fff;max-height:105px}.prompt-block::after{background:linear-gradient(transparent,#000);height:38px}.copy-prompt{background:#fff;color:#000}.copy-prompt:hover{background:var(--acid)}#lotsDialog{max-width:760px}.lots-list{gap:.7rem}.lot-row{grid-template-columns:80px minmax(0,1fr) auto;padding:.85rem}.lot-row>div:nth-child(2){min-width:0}.lot-row small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lot-actions{display:flex;gap:.35rem;opacity:0;pointer-events:none;transition:opacity 100ms ease}.lot-row:hover .lot-actions,.lot-row:focus-within .lot-actions{opacity:1;pointer-events:auto}.lot-actions button{align-items:center;background:transparent;border:0;color:var(--muted);display:flex;height:22px;justify-content:center;padding:0;width:22px}.lot-actions button:hover{background:transparent;color:var(--ink)}.lot-actions svg{fill:currentColor;height:15px;width:15px}.new-lot-action{margin:.9rem 0 0}.new-lot-action button{width:100%}
+    .column[data-status="todo"] .column-head,.demo-column:first-child h3{background:#f3dce2}.brand{align-items:center}.brand h1{font-size:1.28rem;font-weight:850;letter-spacing:-.045em;line-height:1;text-transform:uppercase}*{scrollbar-width:none}*::-webkit-scrollbar{display:none!important;height:0!important;width:0!important}.demo-wrap{isolation:isolate;position:relative;transition:transform 180ms ease}.demo-board{position:relative;transition:box-shadow 180ms ease,transform 180ms ease;z-index:2}.demo-wrap:hover{transform:translateY(-3px)}.demo-wrap:hover .demo-board{box-shadow:9px 10px 0 #aaa89f;transform:rotate(0)}.markdown-flow{height:94px;left:-37px;pointer-events:none;position:absolute;top:-64px;width:180px}.md-file{height:91px;left:0;position:absolute;top:0;width:74px;z-index:1}.md-file svg{filter:drop-shadow(3px 3px 0 #aaa89f);height:100%;overflow:visible;width:100%}.md-file .file-page{fill:#fffef8;stroke:var(--ink);stroke-linejoin:round;stroke-width:2}.md-file .file-fold{fill:#dedcd4;stroke:var(--ink);stroke-linejoin:round;stroke-width:2}.md-file text{fill:var(--ink);font:400 10px var(--mono);letter-spacing:-.06em}.hand-arrows{height:45px;left:69px;overflow:visible;position:absolute;top:12px;transform:rotate(9deg);transform-origin:left center;width:111px;z-index:3}.hand-arrows path{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}.landing-point{transition:box-shadow 160ms ease,transform 160ms ease}.landing-point:hover{box-shadow:4px 4px 0 #aaa89f;transform:translate(-2px,-3px)}.landing-point:hover svg{transform:rotate(-5deg) scale(1.08)}.landing-point svg{transition:transform 160ms ease}.start-option{transition:box-shadow 160ms ease,transform 160ms ease}.start-option:hover{box-shadow:4px 4px 0 #aaa89f;transform:translate(-2px,-2px)}.prompt-block{background:#000;border:1px solid #363631;box-shadow:3px 3px 0 #c1beb6;min-height:132px}.prompt-block::before{color:#8f8f87;content:attr(data-label);font:400 .56rem var(--mono);left:.8rem;letter-spacing:.08em;position:absolute;top:.72rem;z-index:2}.prompt-block .syntax-code{border:0;max-height:130px;padding:2.45rem 1rem 1rem}.prompt-block code{animation:prompt-drift 15s ease-in-out 2s infinite alternate;display:block;will-change:transform}.prompt-block:hover code{animation-play-state:paused}.prompt-block::after{height:52px}.copy-prompt{box-shadow:2px 2px 0 #5d5d58;right:.6rem;top:.55rem}.copy-prompt:active{box-shadow:none;transform:translate(2px,2px)}@keyframes prompt-drift{0%,14%{transform:translateY(0)}86%,100%{transform:translateY(-42%)}}@media(prefers-reduced-motion:reduce){.prompt-block code{animation:none}.demo-wrap,.demo-board,.landing-point,.start-option{transition:none}}
+    .landing h2{font-size:clamp(2.4rem,4.1vw,4.4rem)}.landing-hero .demo-wrap{margin-left:-18px;margin-top:22px}.author-link{border-bottom:3px dotted #77746d;color:inherit;font-weight:650;text-decoration:none}.author-link:hover{border-bottom-color:var(--ink);color:var(--ink)}
+    @media(max-width:900px){.app-header{align-items:flex-start}.metrics{grid-template-columns:1fr 1fr}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.toolbar{grid-template-columns:1fr 1fr}.board{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.column{flex:0 0 min(86vw,360px);scroll-snap-align:start}.actions button{font-size:.68rem;padding:.5rem}.landing-hero{grid-template-columns:1fr}.demo-board{min-height:260px;transform:none}.get-started-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){.app-header{display:block}.brand{margin-bottom:.9rem}.workspace{padding:.8rem}.toolbar{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.lot-row{grid-template-columns:1fr}.modal-actions{flex-wrap:wrap}.landing{padding:1rem .8rem}.landing-points{grid-template-columns:1fr}.landing h2{font-size:2.7rem}.demo-board{min-height:230px}.demo-ticket{font-size:.55rem}.landing-card{box-shadow:4px 4px 0 #aaa89f}}
+    @media(max-width:560px){.landing h2{font-size:2.3rem}.lot-actions{opacity:1;pointer-events:auto}.markdown-flow{left:-8px}.get-started-grid{gap:1rem}.start-option{padding:1rem}}
+  </style>
+</head>
+<body>
+  <canvas id="noise-canvas" aria-hidden="true"></canvas>
+  <header class="app-header">
+    <div class="brand"><h1>Kanban.md</h1><span id="saveState">no file open</span></div>
+    <div class="actions">
+      <button type="button" id="syntaxButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4Zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4Z"/></svg>Get started</span></button>
+      <button type="button" class="primary" id="openMarkdownButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V8c0-1.1-.9-2-2-2Zm0 12H4V8h16v10Z"/></svg>Open Markdown file</span></button>
+      <span class="project-actions hidden" id="projectActions"><button type="button" id="lotsButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8h-5V4H9v4H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2ZM11 6h2v2h-2V6Zm9 12H4v-8h16v8Z"/></svg>Sprints</span></button><button type="button" class="primary" id="newTaskButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>Ticket</span></button></span>
+    </div>
+  </header>
+  <main class="workspace hidden" id="workspace">
+    <section class="metrics" aria-label="Metrics">
+      <div class="metric"><strong id="metricTotal">0</strong><span>visible tickets</span></div>
+      <div class="metric"><strong id="metricEffort">0 d</strong><span>estimated effort</span></div>
+      <div class="metric"><strong id="metricProgress">0%</strong><span>progress</span></div>
+    </section>
+    <section class="toolbar" aria-label="Filters">
+      <div class="filter-control">
+        <div class="filter-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 3a6.5 6.5 0 1 0 3.98 11.64L19.85 21 21 19.85l-6.36-6.37A6.5 6.5 0 0 0 9.5 3Zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z"/></svg>Search</div>
+        <input id="searchFilter" type="search" placeholder="Search tickets...">
+      </div>
+      <div class="filter-control">
+        <div class="filter-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8h-5V4H9v4H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2ZM11 6h2v2h-2V6Zm9 12H4v-8h16v8Z"/></svg>Sprints</div>
+        <details class="multi-filter" id="lotFilter"><summary id="lotFilterSummary">All sprints</summary><div class="filter-options" id="lotFilterOptions"></div></details>
+      </div>
+      <div class="filter-control">
+        <div class="filter-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3h-4a2 2 0 0 0-2 2v1H9V5a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1v4a3 3 0 0 0 3 3h6v1a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-4a2 2 0 0 0 2 2v1H7a1 1 0 0 1-1-1v-4h1a2 2 0 0 0 2-2V8h4v1a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/></svg>Epics</div>
+        <details class="multi-filter" id="epicFilter"><summary id="epicFilterSummary">All epics</summary><div class="filter-options" id="epicFilterOptions"></div></details>
+      </div>
+      <div class="filter-control">
+        <div class="filter-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h10l-1 5 5 3-5 3 1 5H8v4H6V2Zm2 2v12h5.56l-.78-3.88L16.1 10l-3.32-2.12L13.56 4H8Z"/></svg>Priorities</div>
+        <details class="multi-filter" id="priorityFilter"><summary id="priorityFilterSummary">All priorities</summary><div class="filter-options" id="priorityFilterOptions"></div></details>
+      </div>
+    </section>
+    <section class="board" aria-label="Kanban board">
+      <article class="column" data-status="todo"><header class="column-head"><h2>To do</h2><span>0</span></header><div class="cards" id="todoCards"></div></article>
+      <article class="column" data-status="doing"><header class="column-head"><h2>In progress</h2><span>0</span></header><div class="cards" id="doingCards"></div></article>
+      <article class="column" data-status="done"><header class="column-head"><h2>Done</h2><span>0</span></header><div class="cards" id="doneCards"></div></article>
+    </section>
+  </main>
+  <main class="landing" id="landing" aria-labelledby="landingTitle">
+    <section class="landing-card">
+      <div class="landing-hero">
+        <div class="hero-copy">
+          <span class="landing-kicker">Kanban.md · one file in, one board out</span>
+          <h2 id="landingTitle">Your Markdown todo list as a Kanban board.</h2>
+          <p>Turn one readable Markdown file into a visual Kanban. Edit it with your team, your favorite LLM, or this board. No account, no database, no lock-in. Made with 💖 by <a class="author-link" href="https://www.linkedin.com/in/eliott-bourrigan-239757253/" target="_blank" rel="noopener noreferrer">Eliott</a>.</p>
+          <div class="landing-actions">
+            <button type="button" class="primary" id="landingOpenButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V8c0-1.1-.9-2-2-2Zm0 12H4V8h16v10Z"/></svg>Open Markdown file</span></button>
+            <button type="button" id="landingGetStartedButton"><span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4Zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4Z"/></svg>Get started</span></button>
+          </div>
+        </div>
+        <div class="demo-wrap">
+          <div class="markdown-flow" aria-hidden="true"><div class="md-file"><svg viewBox="0 0 64 80"><path class="file-page" d="M9 2h30l16 16v58H9Z"/><path class="file-fold" d="M39 2v16h16Z"/><text x="20" y="49">.MD</text></svg></div><svg class="hand-arrows" viewBox="0 0 111 45"><path d="M5 14c24-10 53-7 84 3m0 0-9-8m9 8-11 4"/></svg></div>
+          <div class="demo-board" aria-label="Animated Kanban preview">
+            <section class="demo-column"><h3>To do</h3><div class="demo-cards" data-demo-status="todo"><article class="demo-ticket" style="--demo-color:#ff9b45">Ship the first release<small>P2 · M · Product</small></article><article class="demo-ticket" style="--demo-color:#68a4d5">Write the README<small>P5 · S · Docs</small></article></div></section>
+            <section class="demo-column"><h3>In progress</h3><div class="demo-cards" data-demo-status="doing"><article class="demo-ticket" style="--demo-color:#e5c52f">Polish the board<small>P3 · M · UI</small></article></div></section>
+            <section class="demo-column"><h3>Done</h3><div class="demo-cards" data-demo-status="done"><article class="demo-ticket" style="--demo-color:#65ad69">Keep it simple<small>P4 · XS · Core</small></article></div></section>
+          </div>
+        </div>
+      </div>
+      <div class="landing-points">
+        <div class="landing-point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6Zm2 16H8v-2h8v2Zm0-4H8v-2h8v2Zm-3-5V3.5L18.5 9H13Z"/></svg><strong>One Markdown file</strong><span>It stays where it belongs: inside your repo, readable in every editor and diffable in every pull request.</span></div>
+        <div class="landing-point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm-9 14-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9Z"/></svg><strong>One HTML Kanban</strong><span>Download it, customize it, decorate it, or break everything. It is your file and your rules.</span></div>
+        <div class="landing-point"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v2H3v6h2v2a2 2 0 0 0 2 2h3v1a2 2 0 0 0 4 0v-1h3a2 2 0 0 0 2-2v-2h2V9h-2V7a2 2 0 0 0-2-2h-3V4a2 2 0 0 0-2-2Zm-3 9h2v2H9v-2Zm4 0h2v2h-2v-2Zm-5 5h8v1H8v-1Z"/></svg><strong>LLM-ready by design</strong><span>Built-in prompts turn a rough todo list into valid Kanban.md syntax in one conversation.</span></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="taskDialog">
+      <form id="taskForm">
+      <header class="modal-head"><h2 id="taskModalTitle">New ticket</h2><button type="button" class="icon-button quiet" data-close="taskDialog">Close</button></header>
+      <div class="modal-body form-grid">
+        <input id="taskOriginalId" type="hidden">
+        <input id="taskId" type="hidden">
+        <div class="field full"><label for="taskEpic">Epic</label><input id="taskEpic" required maxlength="40" list="epicList"><datalist id="epicList"></datalist></div>
+        <div class="field full"><label for="taskTitle">Name</label><input id="taskTitle" required maxlength="180"></div>
+        <div class="field full"><label for="taskDescription">Description</label><textarea id="taskDescription" maxlength="1200"></textarea></div>
+        <div class="field"><label for="taskStatus">Status</label><select id="taskStatus"><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
+        <div class="field"><label for="taskPriority">Priority</label><select id="taskPriority"></select></div>
+        <div class="field"><label for="taskEffort">Estimated effort</label><select id="taskEffort"></select></div>
+        <div class="field"><label for="taskLot">Sprint</label><select id="taskLot" required></select></div>
+      </div>
+      <footer class="modal-actions"><button type="button" data-close="taskDialog">Cancel</button><button class="primary" type="submit">Save</button></footer>
+    </form>
+  </dialog>
+
+  <dialog id="lotsDialog">
+    <header class="modal-head"><h2>Sprints</h2><button type="button" class="icon-button quiet" data-close="lotsDialog">Close</button></header>
+    <div class="modal-body"><div class="lots-list" id="lotsList"></div><p class="new-lot-action"><button type="button" class="primary" id="newLotButton">+ New sprint</button></p></div>
+  </dialog>
+  <dialog id="lotDialog">
+    <form id="lotForm">
+      <header class="modal-head"><h2 id="lotModalTitle">New sprint</h2><button type="button" class="icon-button quiet" data-close="lotDialog">Close</button></header>
+      <div class="modal-body form-grid">
+        <input id="lotOriginalId" type="hidden">
+        <div class="field"><label for="lotId">ID</label><input id="lotId" required maxlength="24" pattern="[A-Za-z0-9_-]+" placeholder="SPRINT-08"></div>
+        <div class="field"><label for="lotName">Name</label><input id="lotName" required maxlength="80"></div>
+        <div class="field full"><label for="lotDescription">Description</label><textarea id="lotDescription" maxlength="500"></textarea></div>
+      </div>
+      <footer class="modal-actions"><button type="button" data-close="lotDialog">Cancel</button><button class="primary" type="submit">Save</button></footer>
+    </form>
+  </dialog>
+  <dialog id="syntaxDialog">
+    <header class="modal-head"><h2>Get started</h2><button type="button" class="icon-button quiet" data-close="syntaxDialog">Close</button></header>
+    <div class="modal-body">
+      <p class="syntax-intro">Pick a path, copy one prompt, then open the generated Markdown file in Kanban.md.</p>
+      <div class="get-started-grid">
+        <section class="start-option">
+          <div class="start-option-head"><span class="option-number">01</span><div><h3>Bring your todo list</h3><p>Turn existing notes into a structured board.</p></div></div>
+          <ol class="start-steps"><li><span class="step-number">1</span><div><strong>Copy the prompt</strong><small>Use the icon in the code preview.</small></div></li><li><span class="step-number">2</span><div><strong>Paste your tasks</strong><small>Replace the placeholder at the bottom.</small></div></li><li><span class="step-number">3</span><div><strong>Open the result</strong><small>Save as .md and load it here.</small></div></li></ol>
+          <div class="prompt-block" data-label="TODO LIST → KANBAN.MD"><button type="button" class="copy-prompt" data-copy-target="todoPrompt" aria-label="Copy prompt" title="Copy prompt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1Zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2Zm0 16H8V7h11v14Z"/></svg></button><pre class="syntax-code"><code id="todoPrompt">Convert the todo list below into a Markdown roadmap compatible with Kanban.md. Return only the raw Markdown content: no explanation, no code fences and no introductory text. I will copy your entire response directly into a .md file and open it in Kanban.md.
+
+ Rules:
+- Create a ## Sprints section first and declare every sprint as **SPRINT-ID — Sprint name**: optional description.
+- Create one level-two heading for each epic.
+- Format every task as: - [ ] **TASK-ID — Short task name**: Optional concise description. (effort|priority|sprint ID)
+- Use [ ] for to do, [-] for in progress and [x] for done.
+- Allowed effort values: XS, S, M, L, XL or ?.
+- Allowed priority values: P0, P1, P2, P3, P4 or P5.
+- Every task must reference a declared sprint.
+- Preserve the language used by the source todo list for epic names, sprint names, ticket names and descriptions.
+- Keep the source meaning and task status; only shorten names when needed for clarity.
+- Do not use tables, nested lists or any other task format.
+
+Todo list:
+[PASTE YOUR TODO LIST HERE]</code></pre></div>
+        </section>
+        <section class="start-option">
+          <div class="start-option-head"><span class="option-number">02</span><div><h3>Start with a clean board</h3><p>Generate an empty structure and fill it later.</p></div></div>
+          <ol class="start-steps"><li><span class="step-number">1</span><div><strong>Copy the prompt</strong><small>One click, no setup required.</small></div></li><li><span class="step-number">2</span><div><strong>Generate the file</strong><small>Let your LLM create the skeleton.</small></div></li><li><span class="step-number">3</span><div><strong>Make it yours</strong><small>Open, edit and extend the board.</small></div></li></ol>
+          <div class="prompt-block" data-label="EMPTY BOARD → KANBAN.MD"><button type="button" class="copy-prompt" data-copy-target="emptyPrompt" aria-label="Copy prompt" title="Copy prompt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1Zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2Zm0 16H8V7h11v14Z"/></svg></button><pre class="syntax-code"><code id="emptyPrompt">Create an empty Markdown roadmap compatible with Kanban.md. Return only the raw Markdown content: no explanation, no code fences and no introductory text. I will copy your entire response directly into a .md file and open it in Kanban.md.
+
+ Include:
+- A ## Sprints section with three useful starter sprints.
+- Three level-two epic headings with no tasks yet.
+- No tables, nested lists or extra metadata.
+- Use English for this new empty board.
+
+Use this task syntax for future entries:
+- [ ] **TASK-ID — Short task name**: Optional concise description. (effort|priority|sprint ID)
+
+Allowed effort values: XS, S, M, L, XL or ?.
+Allowed priority values: P0, P1, P2, P3, P4 or P5.
+Use [ ] for to do, [-] for in progress and [x] for done.</code></pre></div>
+        </section>
+      </div>
+    </div>
+  </dialog>
+  <div class="toast hidden" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script>
+    const priorities = ['P0-urgent','P1-critical','P2-high','P3-medium','P4-low','P5-backlog'];
+    const priorityLabels = {'P0-urgent':'P0','P1-critical':'P1','P2-high':'P2','P3-medium':'P3','P4-low':'P4','P5-backlog':'P5'};
+    const efforts = ['XS-30m','S-3h','M-1d','L-2d+','XL-5d+','unknown'];
+    const effortLabels = {'XS-30m':'XS','S-3h':'S','M-1d':'M','L-2d+':'L','XL-5d+':'XL','unknown':'?'};
+    const effortDays = {'XS-30m':.05,'S-3h':.25,'M-1d':.75,'L-2d+':2,'XL-5d+':5,unknown:0};
+    const filters = {lot:new Set(),epic:new Set(),priority:new Set()};
+    let state = {schema:1,lots:[],epics:[],tasks:[]};
+    let sortables = [];
+    let markdownHandle = null;
+    let markdownWriteQueue = Promise.resolve();
+
+    function saveState(message='Saved'){
+      document.getElementById('saveState').textContent='syncing...';
+      queueMarkdownSync();
+      if(message)showToast(message);
+    }
+    function cleanMarkdown(value=''){return String(value).replace(/\s+/g,' ').replace(/\*\*/g,'').replace(/\|/g,'/').trim();}
+    function buildMarkdown(){
+      const lines=['# Roadmap','','Format: `- [status] **ID — Name**: Optional description (effort|priority|sprint)`.','','## Sprints',''];
+      state.lots.forEach(lot=>lines.push(`- **${cleanMarkdown(lot.id)} — ${cleanMarkdown(lot.name)}**${lot.description?` : ${cleanMarkdown(lot.description)}`:''}`));
+      const epics=[...new Set([...(state.epics||[]),...state.tasks.map(task=>task.epic)])];const statusOrder={todo:0,doing:1,done:2};
+      epics.forEach(epic=>{lines.push('',`## ${cleanMarkdown(epic)}`,'');state.tasks.filter(task=>task.epic===epic).sort((a,b)=>(statusOrder[a.status]-statusOrder[b.status])||((a.order??0)-(b.order??0))).forEach(task=>{const marker=task.status==='done'?'x':task.status==='doing'?'-':' ';const description=cleanMarkdown(task.description);lines.push(`- [${marker}] **${cleanMarkdown(task.id)} — ${cleanMarkdown(task.title)}**${description?` : ${description}`:''} (${effortLabels[task.effort]||'?'}|${priorityLabels[task.priority]||task.priority}|${cleanMarkdown(task.lot)})`);});});
+      lines.push('','## Legend','','- **Status**: `[ ]` to do, `[-]` in progress, `[x]` done.','- **Effort**: `XS`, `S`, `M`, `L`, `XL` or `?`.','- **Priority**: `P0` urgent to `P5` backlog.','');return lines.join('\n');
+    }
+    function parseMarkdown(source){
+      const lots=[];const epics=[];const tasks=[];const lotIds=new Set();const taskIds=new Set();let section='';
+      const effortValues={XS:'XS-30m',S:'S-3h',M:'M-1d',L:'L-2d+',XL:'XL-5d+','?':'unknown'};const priorityValues={P0:'P0-urgent',P1:'P1-critical',P2:'P2-high',P3:'P3-medium',P4:'P4-low',P5:'P5-backlog'};
+      source.split(/\r?\n/).forEach((rawLine,index)=>{const line=rawLine.trim();const heading=line.match(/^##\s+(.+)$/);if(heading){section=heading[1].trim();if(section!=='Sprints'&&section!=='Lots'&&section!=='Legend'&&section!=='Légende'&&!epics.includes(section))epics.push(section);return;}if(!line)return;
+        if(section==='Sprints'||section==='Lots'){const match=line.match(/^- \*\*(.+?)\s+—\s+(.+?)\*\*(?:\s*:\s*(.+))?$/);if(match){const id=match[1].trim();if(lotIds.has(id))throw new Error(`Duplicate sprint on line ${index+1}: ${id}`);lotIds.add(id);lots.push({id,name:match[2].trim(),description:(match[3]||'').trim()});}return;}
+        if(!section||section==='Legend'||section==='Légende')return;const match=line.match(/^- \[([ x-])\] \*\*(.+?)\s+—\s+(.+?)\*\*(?:\s*:\s*(.*?))?\s+\((XS|S|M|L|XL|\?)\|(P[0-5])(?:\|([A-Za-z0-9_-]+))?\)\s*$/);if(!match)return;
+        const id=match[2].trim();if(taskIds.has(id))throw new Error(`Duplicate ticket on line ${index+1}: ${id}`);taskIds.add(id);tasks.push({id,epic:section,title:match[3].trim(),description:(match[4]||'').trim(),status:match[1]==='x'?'done':match[1]==='-'?'doing':'todo',effort:effortValues[match[5]],priority:priorityValues[match[6]],lot:match[7]||'LOT-00',order:tasks.length});
+      });
+      if(!tasks.length&&!epics.length)throw new Error('No compatible epics or tickets found. Open Get started for the expected syntax.');if(!lots.length){lots.push({id:'LOT-00',name:'Unassigned',description:''});lotIds.add('LOT-00');}
+      tasks.forEach(task=>{if(!lotIds.has(task.lot)){lots.push({id:task.lot,name:task.lot,description:''});lotIds.add(task.lot);}});['todo','doing','done'].forEach(status=>tasks.filter(task=>task.status===status).sort((a,b)=>priorities.indexOf(a.priority)-priorities.indexOf(b.priority)).forEach((task,order)=>task.order=order));return {schema:1,lots,epics,tasks};
+    }
+    async function writeMarkdown(){
+      if(!markdownHandle)return;const permission=await markdownHandle.queryPermission({mode:'readwrite'});if(permission!=='granted')throw new Error('Write permission was revoked.');
+      const writable=await markdownHandle.createWritable();await writable.write(buildMarkdown());await writable.close();document.getElementById('saveState').textContent=`${markdownHandle.name} · synced`;
+    }
+    function queueMarkdownSync(){if(!markdownHandle)return;markdownWriteQueue=markdownWriteQueue.then(writeMarkdown).catch(error=>{console.error('Markdown sync failed',error);document.getElementById('saveState').textContent='sync error';showToast('Markdown sync failed');});}
+    async function openMarkdown(){
+      if(!window.showOpenFilePicker)return alert('Direct file access requires Chrome or Edge.');
+      try{
+        const [handle]=await window.showOpenFilePicker({multiple:false,types:[{description:'Markdown file',accept:{'text/markdown':['.md']}}]});
+        const permission=await handle.requestPermission({mode:'readwrite'});if(permission!=='granted')return;const parsed=parseMarkdown(await (await handle.getFile()).text());markdownHandle=handle;state=parsed;filters.lot.clear();filters.epic.clear();filters.priority.clear();document.getElementById('landing').classList.add('hidden');document.getElementById('workspace').classList.remove('hidden');document.getElementById('projectActions').classList.remove('hidden');document.getElementById('openMarkdownButton').innerHTML='<span class="button-content"><svg class="mui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6V3L8 7l4 4V8c3.31 0 6 2.69 6 6a6 6 0 0 1-6 6 6 6 0 0 1-5.65-4H4.26A8 8 0 0 0 12 22a8 8 0 0 0 0-16Z"/></svg>Change file</span>';document.getElementById('saveState').textContent=`${handle.name} · open`;render();showToast('Markdown file opened');
+      }catch(error){if(error.name!=='AbortError'){console.error(error);alert(`Unable to open file: ${error.message}`);}}
+    }
+    async function copyPrompt(button){const target=document.getElementById(button.dataset.copyTarget);try{await navigator.clipboard.writeText(target.textContent);}catch{const range=document.createRange();range.selectNodeContents(target);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');selection.removeAllRanges();}showToast('Prompt copied');}
+    function esc(value=''){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));}
+    function lotName(id){return state.lots.find(lot=>lot.id===id)?.name||id;}
+    function epicHue(value){let hash=0;for(let index=0;index<value.length;index++)hash=value.charCodeAt(index)+((hash<<5)-hash);return Math.abs(hash)%360;}
+    function showToast(message){const toast=document.getElementById('toast');toast.textContent=message;toast.classList.remove('hidden');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.add('hidden'),1800);}
+    function fillSelect(select,values,labels,first){select.innerHTML=(first||'')+values.map(value=>`<option value="${esc(value)}">${esc(labels?.[value]||value)}</option>`).join('');}
+    function filteredTasks(){
+      const query=document.getElementById('searchFilter').value.trim().toLocaleLowerCase('en');
+      return state.tasks.filter(task=>(!query||[task.id,task.title,task.description,task.epic].join(' ').toLocaleLowerCase('en').includes(query))&&(!filters.lot.size||filters.lot.has(task.lot))&&(!filters.epic.size||filters.epic.has(task.epic))&&(!filters.priority.size||filters.priority.has(task.priority)));
+    }
+    function cardHtml(task){
+      const editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a.996.996 0 0 0 0-1.41l-2.5-2.5a.996.996 0 0 0-1.41 0l-1.96 1.96 3.75 3.75 2.12-1.8Z"/></svg>';
+      const deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 9h8v10H8V9Zm7.5-5-1-1h-5l-1 1H5v2h14V4h-3.5Z"/></svg>';
+      return `<article class="card priority-border-${esc(task.priority)}" data-id="${esc(task.id)}"><div class="card-top"><h3 title="${esc(task.title)}">${esc(task.title)}</h3><span class="ticket-separator" aria-hidden="true">•</span><span class="ticket-id">${esc(task.id)}</span><div class="card-menu"><button type="button" class="edit-task" aria-label="Edit" title="Edit">${editIcon}</button><button type="button" class="delete-task" aria-label="Delete" title="Delete">${deleteIcon}</button></div></div><p class="description" title="${esc(task.description)}">${task.description?esc(task.description):'&nbsp;'}</p><div class="tags"><span class="tag priority-${esc(task.priority)}">${esc(priorityLabels[task.priority])}</span><span class="tag">${esc(effortLabels[task.effort])}</span><span class="tag lot">${esc(lotName(task.lot))}</span><span class="tag epic-tag" style="--epic-hue:${epicHue(task.epic)}">${esc(task.epic)}</span></div></article>`;
+    }
+    function render(){
+      const visible=filteredTasks().sort((a,b)=>(a.order??0)-(b.order??0));
+      ['todo','doing','done'].forEach(status=>{const tasks=visible.filter(task=>task.status===status);const el=document.getElementById(status+'Cards');el.innerHTML=tasks.map(cardHtml).join('')||'<div class="empty">Drop a ticket here</div>';document.querySelector(`.column[data-status="${status}"] .column-head span`).textContent=tasks.length;});
+      const effort=visible.reduce((sum,task)=>sum+(effortDays[task.effort]||0),0); const done=visible.filter(task=>task.status==='done').length;
+      document.getElementById('metricTotal').textContent=visible.length;document.getElementById('metricEffort').textContent=(Math.round(effort*10)/10).toLocaleString('en-US')+' d';document.getElementById('metricProgress').textContent=(visible.length?Math.round(done/visible.length*100):0)+'%';
+      renderFilters(); bindCards(); initSortables();
+    }
+    function renderFilterOptions(kind,items,labels,emptyLabel,countLabel){
+      const selected=filters[kind];const values=new Set(items);[...selected].forEach(value=>{if(!values.has(value))selected.delete(value);});
+      document.getElementById(`${kind}FilterOptions`).innerHTML=items.map(value=>`<label class="filter-option"><input type="checkbox" value="${esc(value)}"${selected.has(value)?' checked':''}><span>${esc(labels?.[value]||value)}</span></label>`).join('');
+      const summary=document.getElementById(`${kind}FilterSummary`);summary.textContent=!selected.size?emptyLabel:selected.size===1?(labels?.[[...selected][0]]||[...selected][0]):`${selected.size} ${countLabel}`;
+      document.querySelectorAll(`#${kind}FilterOptions input`).forEach(input=>input.addEventListener('change',()=>{input.checked?selected.add(input.value):selected.delete(input.value);render();}));
+    }
+    function renderFilters(){
+      renderFilterOptions('lot',state.lots.map(lot=>lot.id),Object.fromEntries(state.lots.map(lot=>[lot.id,lot.name])),'All sprints','sprints');
+      renderFilterOptions('epic',[...new Set([...(state.epics||[]),...state.tasks.map(task=>task.epic)])].sort((a,b)=>a.localeCompare(b,'en')),null,'All epics','epics');
+      renderFilterOptions('priority',priorities,priorityLabels,'All priorities','priorities');
+    }
+    function initSortables(){
+      sortables.forEach(instance=>instance.destroy());sortables=[];
+      if(!window.Sortable){document.getElementById('saveState').textContent='SortableJS indisponible';return;}
+      document.querySelectorAll('.cards').forEach(container=>sortables.push(new Sortable(container,{group:'roadmap',animation:150,draggable:'.card',ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',onEnd:event=>{
+        const id=event.item.dataset.id;const task=state.tasks.find(item=>item.id===id);if(!task)return;task.status=event.to.closest('.column').dataset.status;
+        document.querySelectorAll('.cards').forEach(list=>[...list.querySelectorAll('.card')].forEach((card,index)=>{const item=state.tasks.find(candidate=>candidate.id===card.dataset.id);if(item&&item.status===card.closest('.column').dataset.status)item.order=index;}));
+         saveState('Ticket moved');render();
+      }})));
+    }
+    function bindCards(){
+      document.querySelectorAll('.edit-task').forEach(button=>button.addEventListener('click',()=>openTask(button.closest('.card').dataset.id)));
+      document.querySelectorAll('.delete-task').forEach(button=>button.addEventListener('click',()=>deleteTask(button.closest('.card').dataset.id)));
+    }
+    function nextTaskId(){let number=1;const ids=new Set(state.tasks.map(task=>task.id));while(ids.has(`TASK-${String(number).padStart(3,'0')}`))number++;return `TASK-${String(number).padStart(3,'0')}`;}
+    function openTask(id){
+      const task=state.tasks.find(item=>item.id===id);document.getElementById('taskForm').reset();document.getElementById('taskOriginalId').value=task?.id||'';document.getElementById('taskModalTitle').textContent=task?'Edit ticket':'New ticket';
+      fillSelect(document.getElementById('taskPriority'),priorities,priorityLabels);fillSelect(document.getElementById('taskEffort'),efforts,effortLabels);fillSelect(document.getElementById('taskLot'),state.lots.map(lot=>lot.id),Object.fromEntries(state.lots.map(lot=>[lot.id,`${lot.id} · ${lot.name}`])));
+      document.getElementById('epicList').innerHTML=[...new Set([...(state.epics||[]),...state.tasks.map(item=>item.epic)])].map(epic=>`<option value="${esc(epic)}">`).join('');
+      document.getElementById('taskId').value=task?.id||nextTaskId();document.getElementById('taskEpic').value=task?.epic||'';document.getElementById('taskTitle').value=task?.title||'';document.getElementById('taskDescription').value=task?.description||'';document.getElementById('taskStatus').value=task?.status||'todo';document.getElementById('taskPriority').value=task?.priority||'P3-medium';document.getElementById('taskEffort').value=task?.effort||'unknown';document.getElementById('taskLot').value=task?.lot||state.lots[0]?.id||'';
+      document.getElementById('taskDialog').showModal();
+    }
+    function deleteTask(id){
+      const task=state.tasks.find(item=>item.id===id);if(!task||!confirm(`Delete ${id} · ${task.title}?`))return;state.tasks=state.tasks.filter(item=>item.id!==id);saveState('Ticket deleted');render();
+    }
+    function renderLots(){
+      const editIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a.996.996 0 0 0 0-1.41l-2.5-2.5a.996.996 0 0 0-1.41 0l-1.96 1.96 3.75 3.75 2.12-1.8Z"/></svg>';const deleteIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 9h8v10H8V9Zm7.5-5-1-1h-5l-1 1H5v2h14V4h-3.5Z"/></svg>';
+      document.getElementById('lotsList').innerHTML=state.lots.map(lot=>`<div class="lot-row"><code>${esc(lot.id)}</code><div><strong>${esc(lot.name)}</strong><small title="${esc(lot.description)}">${esc(lot.description||'No description')}</small></div><div class="lot-actions"><button type="button" class="edit-lot" data-id="${esc(lot.id)}" aria-label="Edit sprint" title="Edit sprint">${editIcon}</button><button type="button" class="delete-lot" data-id="${esc(lot.id)}" aria-label="Delete sprint" title="Delete sprint">${deleteIcon}</button></div></div>`).join('');
+      document.querySelectorAll('.edit-lot').forEach(button=>button.addEventListener('click',()=>openLot(button.dataset.id)));document.querySelectorAll('.delete-lot').forEach(button=>button.addEventListener('click',()=>deleteLot(button.dataset.id)));
+    }
+    function openLot(id){const lot=state.lots.find(item=>item.id===id);document.getElementById('lotForm').reset();document.getElementById('lotOriginalId').value=lot?.id||'';document.getElementById('lotModalTitle').textContent=lot?'Edit sprint':'New sprint';document.getElementById('lotId').value=lot?.id||`SPRINT-${String(state.lots.length).padStart(2,'0')}`;document.getElementById('lotName').value=lot?.name||'';document.getElementById('lotDescription').value=lot?.description||'';document.getElementById('lotDialog').showModal();}
+    function deleteLot(id){const count=state.tasks.filter(task=>task.lot===id).length;if(count)return alert(`This sprint contains ${count} ticket(s). Reassign them before deleting it.`);if(!confirm(`Delete sprint ${id}?`))return;state.lots=state.lots.filter(lot=>lot.id!==id);saveState('Sprint deleted');renderLots();render();}
+    function closeDialog(id){document.getElementById(id).close();}
+
+    function startNoise(){
+      const canvas=document.getElementById('noise-canvas');const context=canvas.getContext('2d',{alpha:true});const width=240,height=140;canvas.width=width;canvas.height=height;const image=context.createImageData(width,height);const permutation=Array.from({length:256},(_,index)=>index);for(let index=255;index>0;index--){const swap=Math.floor(Math.random()*(index+1));[permutation[index],permutation[swap]]=[permutation[swap],permutation[index]];}const table=[...permutation,...permutation];
+      const fade=value=>value*value*value*(value*(value*6-15)+10);const lerp=(a,b,value)=>a+(b-a)*value;const dot2=(hash,x,y)=>{switch(hash&3){case 0:return x+y;case 1:return-x+y;case 2:return x-y;default:return-x-y;}};
+      const noise2=(x,y)=>{const floorX=Math.floor(x),floorY=Math.floor(y),xi=floorX&255,yi=floorY&255,xf=x-floorX,yf=y-floorY,u=fade(xf),v=fade(yf),aa=table[table[xi]+yi],ab=table[table[xi]+yi+1],ba=table[table[xi+1]+yi],bb=table[table[xi+1]+yi+1];return lerp(lerp(dot2(aa,xf,yf),dot2(ba,xf-1,yf),u),lerp(dot2(ab,xf,yf-1),dot2(bb,xf-1,yf-1),u),v);};let time=0;
+      const draw=()=>{for(let y=0;y<height;y++)for(let x=0;x<width;x++){const first=noise2(x*.025+time,y*.025-time*.55),second=noise2(x*.057-time*1.7,y*.057+time*.8),mixed=(first*.7+second*.3+1)/2,value=Math.max(0,mixed-.15)/.85,index=(y*width+x)*4;image.data[index]=92;image.data[index+1]=132;image.data[index+2]=166;image.data[index+3]=Math.round(value*45);}context.putImageData(image,0,0);if(!matchMedia('(prefers-reduced-motion: reduce)').matches){time+=.006;requestAnimationFrame(draw);}};draw();
+    }
+    function startDemoBoard(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const columns=[...document.querySelectorAll('.demo-cards')];let move=0;setInterval(()=>{if(document.getElementById('landing').classList.contains('hidden'))return;const source=columns[move%columns.length],target=columns[(move+1)%columns.length],ticket=source.firstElementChild;if(!ticket){move++;return;}const tickets=[...document.querySelectorAll('.demo-ticket')],before=new Map(tickets.map(item=>[item,item.getBoundingClientRect()]));target.appendChild(ticket);tickets.forEach(item=>{const from=before.get(item),to=item.getBoundingClientRect(),x=from.left-to.left,y=from.top-to.top;if(x||y)item.animate([{transform:`translate(${x}px,${y}px)`,opacity:item===ticket ? .72 : 1},{transform:'translate(0,0)',opacity:1}],{duration:650,easing:'cubic-bezier(.2,.8,.2,1)'});});move++;},1800);}
+
+    document.getElementById('taskForm').addEventListener('submit',event=>{event.preventDefault();const original=document.getElementById('taskOriginalId').value;const id=original||nextTaskId();const task={id,epic:document.getElementById('taskEpic').value.trim(),title:document.getElementById('taskTitle').value.trim(),description:document.getElementById('taskDescription').value.trim(),status:document.getElementById('taskStatus').value,priority:document.getElementById('taskPriority').value,effort:document.getElementById('taskEffort').value,lot:document.getElementById('taskLot').value,order:0};if(!state.epics.includes(task.epic))state.epics.push(task.epic);if(original){const index=state.tasks.findIndex(item=>item.id===original);task.order=state.tasks[index].order??0;state.tasks[index]=task;}else{task.order=state.tasks.filter(item=>item.status===task.status).length;state.tasks.push(task);}closeDialog('taskDialog');saveState(original?'Ticket updated':'Ticket created');render();});
+    document.getElementById('lotForm').addEventListener('submit',event=>{event.preventDefault();const original=document.getElementById('lotOriginalId').value;const id=document.getElementById('lotId').value.trim().toUpperCase();if(state.lots.some(lot=>lot.id===id&&lot.id!==original))return alert(`ID ${id} already exists.`);const lot={id,name:document.getElementById('lotName').value.trim(),description:document.getElementById('lotDescription').value.trim()};if(original){state.lots[state.lots.findIndex(item=>item.id===original)]=lot;if(original!==id)state.tasks.forEach(task=>{if(task.lot===original)task.lot=id;});}else state.lots.push(lot);closeDialog('lotDialog');saveState(original?'Sprint updated':'Sprint created');renderLots();render();});
+    document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeDialog(button.dataset.close)));document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();}));
+    document.getElementById('newTaskButton').addEventListener('click',()=>openTask());document.getElementById('lotsButton').addEventListener('click',()=>{renderLots();document.getElementById('lotsDialog').showModal();});document.getElementById('openMarkdownButton').addEventListener('click',openMarkdown);document.getElementById('landingOpenButton').addEventListener('click',openMarkdown);document.getElementById('syntaxButton').addEventListener('click',()=>document.getElementById('syntaxDialog').showModal());document.getElementById('landingGetStartedButton').addEventListener('click',()=>document.getElementById('syntaxDialog').showModal());document.querySelectorAll('.copy-prompt').forEach(button=>button.addEventListener('click',()=>copyPrompt(button)));document.getElementById('newLotButton').addEventListener('click',()=>openLot());
+    document.getElementById('searchFilter').addEventListener('input',render);
+    startNoise();startDemoBoard();if(!window.showOpenFilePicker){[document.getElementById('openMarkdownButton'),document.getElementById('landingOpenButton')].forEach(button=>{button.disabled=true;button.textContent='Chrome or Edge required';});}
+  </script>
+</body>
+</html>
